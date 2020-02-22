@@ -6,7 +6,26 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from fake_useragent import UserAgent
 
+
+class RandomUserAgentMiddleware(object):
+    def __init__(self, crawler):
+        super(RandomUserAgentMiddleware, self).__init__()
+        self.ua = UserAgent()
+        # 从配置文件setting中读取RANDOM_UA_TYPE值，如果配置不存在，则采用默认的random进行随机。
+        self.ua_type = crawler.settings.get("RANDOM_UA_TYPE", "random")
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        # 在scrapy内置请求头中间件中，该方法的作用是返回了当前类的对象
+        return cls(crawler)
+
+    def process_request(self, request, spider):
+        def get_user_agent():
+            # 返回最终的user-agent，类似于对象.属性
+            return getattr(self.ua, self.ua_type)
+        request.headers['User-Agent'] = get_user_agent()
 
 class DoubanspiderSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
