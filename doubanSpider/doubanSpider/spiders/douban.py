@@ -50,6 +50,6 @@ class DoubanSpider(scrapy.Spider):
             if not 'https://book.douban.com' in url:
                 url = 'https://book.douban.com' + url
             yield scrapy.Request(url=url, meta={'refere': response.url}, callback=self.parse)
-            i = i+1
-            if i > 2:
+            i = i + 1
+            if i > 1:
                 break
