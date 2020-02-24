@@ -8,13 +8,15 @@
 import scrapy
 
 
-class DoubanspiderItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
+class crawledItem(scrapy.Item):
+    """爬取下来的网页信息，没有重复网址，重复网址会被redis过滤掉"""
     url = scrapy.Field()
     refere = scrapy.Field()
     status = scrapy.Field()
-    time = scrapy.Field()
     title = scrapy.Field()
 
 
+class requestItem(scrapy.Item):
+    """在解析网页时，请求的网页信息，可能包含大量重复的网址"""
+    url = scrapy.Field()
+    refere = scrapy.Field()

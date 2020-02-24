@@ -44,6 +44,12 @@ DOWNLOAD_DELAY = 30
 #   'Accept-Language': 'en',
 #}
 
+import datetime
+today = datetime.datetime.now()
+log_file_path = 'log/scrapy {} {} {}.log'.format(today.year, today.month, today.day)
+LOG_LEVEL = 'DEBUG'
+LOG_FILE = log_file_path
+
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
