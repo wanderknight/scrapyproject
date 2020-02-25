@@ -2,14 +2,16 @@
 import scrapy
 from urllib import parse
 import logging
+from scrapy_redis.spiders import RedisSpider
+
 from doubanSpider.items import crawledItem
 from doubanSpider.items import requestItem
 
-class DoubanSpider(scrapy.Spider):
+class DoubanSpider(RedisSpider):
     name = 'douban'
     allowed_domains = ['www.douban.com',
                        'book.douban.com']  # 解决 Filtered offsite request to 错误
-    start_urls = ['https://book.douban.com/tag/', ]
+    # start_urls = ['https://book.douban.com/tag/', ]
 
     # 'https://book.douban.com/tag/%E7%BB%8F%E5%85%B8',
     # 'https://www.douban.com/doulist/481692/'

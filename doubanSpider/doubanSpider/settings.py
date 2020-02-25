@@ -17,7 +17,11 @@ NEWSPIDER_MODULE = 'doubanSpider.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'doubanSpider (+http://www.yourdomain.com)'
-
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+SCHEDULER_PERSIST = True
+REDIS_HOST = '127.0.0.1'#修改为Redis的实际IP地址
+REDIS_PORT = 6380#修改为Redis的实际端口
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
