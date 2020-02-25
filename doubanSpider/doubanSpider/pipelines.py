@@ -23,13 +23,13 @@ class mySqlPipeline(object):
     def process_item(self, item, spider):
         if isinstance(item, crawledItem):
             # sql语句
-            insert_sql = """insert into crawled_table(url, refere, status, time, title) VALUES (%s,%s,%s,current_timestamp,%s)"""
+            insert_sql = """insert into crawled_table(url, refere, status, time, title) VALUES (%s,%s,%s,current_timestamp(6),%s)"""
             # 执行插入数据到数据库操作
             self.cursor.execute(insert_sql, (item['url'], item['refere'], item['status'],
                                              item['title']))
             # 提交，不进行提交无法保存到数据库
         elif isinstance(item, requestItem):
-            insert_sql = """insert into request_table(url, refere, time ) VALUES (%s,%s,current_timestamp)"""
+            insert_sql = """insert into request_table(url, refere, time ) VALUES (%s,%s,current_timestamp(6))"""
             # 执行插入数据到数据库操作
             self.cursor.execute(insert_sql, (item['url'], item['refere']))
 
