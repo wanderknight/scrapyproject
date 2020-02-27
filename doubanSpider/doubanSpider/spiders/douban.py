@@ -3,9 +3,11 @@ import scrapy
 from urllib import parse
 import logging
 from scrapy_redis.spiders import RedisSpider
-
+import os
+import datetime
 from doubanSpider.items import crawledItem
 from doubanSpider.items import requestItem
+
 
 class DoubanSpider(RedisSpider):
     name = 'douban'
@@ -15,6 +17,21 @@ class DoubanSpider(RedisSpider):
 
     # 'https://book.douban.com/tag/%E7%BB%8F%E5%85%B8',
     # 'https://www.douban.com/doulist/481692/'
+    tag_filter_list = []
+
+    def __init__(self, category=None, *args, **kwargs):
+        super(DoubanSpider, self).__init__(*args, **kwargs)
+        self._tag_filter()
+
+    def _tag_filter(self):
+        with open('E:\douban_spider_data\豆瓣 tag 大类 去重.csv') as tag_filter_file:
+            for line in tag_filter_file.readlines():
+                if not 'https://book.douban.com' in line:
+                    url = 'https://book.douban.com' + line.strip()
+                else:
+                    url = line.strip()
+                self.tag_filter_list.append(url)
+
     def _url2filename(self, url):
         """
         WINDOWS系统中，文件名不能包含下列任何字符
@@ -26,12 +43,15 @@ class DoubanSpider(RedisSpider):
         url:传入的网址
         :filename:
         """
-        filename = url.replace(':', '[').replace('/', ']').replace('?', '？') + '.html'
+        filename = url.replace(':', '[').replace('/', ']').replace('?', '？')
         return filename
 
     def parse(self, response):
         logging.debug('test')
         filename = self._url2filename(parse.unquote(response.url))
+        now = str(datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+        filename = filename + '_' + now + '.html'
+        filename = os.path.join('E:\douban_spider_data\html\\', filename)
         with open(filename, 'wb') as file_object:
             file_object.write(response.body)
 
@@ -47,11 +67,13 @@ class DoubanSpider(RedisSpider):
         yield item_crawled
 
         tag_urls = response.xpath('//a[contains(@href,"/tag/")]/@href').extract()
-        i = 0
+
         items = []
         for url in tag_urls:
             if not 'https://book.douban.com' in url:
                 url = 'https://book.douban.com' + url
+            if url in self.tag_filter_list:
+                continue
             yield scrapy.Request(url=url, meta={'refere': response.url}, callback=self.parse)
 
             item_request = requestItem()
@@ -59,10 +81,5 @@ class DoubanSpider(RedisSpider):
             item_request['refere'] = parse.unquote(response.url)
             items.append(item_request)
 
-            i = i + 1
-            if i > 1:
-                break
-
         for it in items:
             yield it
-

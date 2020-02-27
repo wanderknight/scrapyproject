@@ -22,8 +22,10 @@ DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 SCHEDULER_PERSIST = True
 REDIS_HOST = '127.0.0.1'#修改为Redis的实际IP地址
 REDIS_PORT = 6380#修改为Redis的实际端口
+
+CLOSESPIDER_ERRORCOUNT = 20
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -50,7 +52,7 @@ DOWNLOAD_DELAY = 30
 
 import datetime
 today = datetime.datetime.now()
-log_file_path = 'log/scrapy {} {} {}.log'.format(today.year, today.month, today.day)
+log_file_path = 'E:\\douban_spider_data\\log/scrapy {} {} {}.log'.format(today.year, today.month, today.day)
 LOG_LEVEL = 'DEBUG'
 LOG_FILE = log_file_path
 
